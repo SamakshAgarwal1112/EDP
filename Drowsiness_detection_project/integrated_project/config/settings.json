@@ -1,0 +1,134 @@
+{
+  "system": {
+    "name": "Drowsiness Detection System",
+    "version": "2.1.0",
+    "debug_mode": false,
+    "performance_monitoring": true
+  },
+  "eye_tracker": {
+    "model_path": "models/cnn_eye_model_v2.h5",
+    "model_type": "cnn",
+    "input_shape": [24, 24, 1],
+    "thresholds": {
+      "eye_closed_frames": 20,
+      "normal_drowsy": 20,
+      "extreme_drowsy": 40,
+      "perclos": 0.8,
+      "blink_rate": 0.2
+    },
+    "smoothing": {
+      "window_size": 50,
+      "method": "exponential_moving_average"
+    },
+    "performance": {
+      "max_fps": 30,
+      "resolution": [640, 480]
+    }
+  },
+  "alert_system": {
+    "levels": {
+      "mild": {
+        "interval_sec": 15,
+        "volume": 0.7,
+        "repeat_count": 3
+      },
+      "moderate": {
+        "interval_sec": 10,
+        "volume": 0.85,
+        "repeat_count": 5
+      },
+      "extreme": {
+        "interval_sec": 5,
+        "volume": 1.0,
+        "repeat_count": 0
+      }
+    },
+    "audio": {
+      "enabled": true,
+      "fallback_beep": true,
+      "custom_sounds": {
+        "mild": "sounds/mild_alert.wav",
+        "extreme": "sounds/extreme_alert.wav"
+      }
+    },
+    "tts": {
+      "enabled": true,
+      "rate": 180,
+      "volume": 1.0,
+      "voice": "female"
+    }
+  },
+  "voice_interface": {
+    "stt": {
+      "model": "whisper",
+      "model_size": "base",
+      "language": "auto",
+      "phrase_time_limit": 5,
+      "energy_threshold": 400,
+      "dynamic_energy_threshold": true
+    },
+    "tts": {
+      "engine": "pyttsx3",
+      "rate": 160,
+      "volume": 1.0,
+      "voice_preference": ["female", "male"]
+    },
+    "vad": {
+      "enabled": true,
+      "timeout_sec": 2.0,
+      "min_volume_db": -40
+    }
+  },
+  "conversation_engine": {
+    "responses": {
+      "misinterpretation_chance": 0.15,
+      "randomization_factor": 0.3,
+      "response_delay_sec": 1.2
+    },
+    "knowledge_base": "config/conversation_kb.json",
+    "languages": {
+      "default": "en",
+      "supported": ["en", "es", "fr", "de"]
+    }
+  },
+  "language_support": {
+    "translation": {
+      "provider": "googletrans",
+      "cache_enabled": true,
+      "cache_size": 1000,
+      "fallback_language": "en"
+    },
+    "detection": {
+      "method": "fasttext",
+      "confidence_threshold": 0.7
+    }
+  },
+  "logging": {
+    "enabled": true,
+    "level": "INFO",
+    "file": {
+      "enabled": true,
+      "path": "logs/system.log",
+      "max_size_mb": 10,
+      "backup_count": 5
+    },
+    "console": {
+      "enabled": true,
+      "color": true
+    }
+  },
+  "modules": {
+    "auto_start": ["eye_tracker", "voice_interface", "alert_system"],
+    "start_delay_sec": 1.0
+  },
+  "privacy": {
+    "audio_recording": {
+      "enabled": false,
+      "retention_days": 1
+    },
+    "data_collection": {
+      "enabled": false,
+      "anonymize": true
+    }
+  }
+}
