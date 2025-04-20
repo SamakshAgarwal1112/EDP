@@ -1,156 +1,239 @@
-# 🚗 AI-Powered Drowsiness Detection & Prevention System
+Getting Started
 
-![System Architecture Diagram](docs/system_architecture.png) *(Example diagram placeholder)*
-
-A **real-time, multilingual intelligent system** that detects drowsiness using computer vision, engages users with conversational AI, and provides graduated alerts to prevent accidents.
-
----
-
-## 🌟 Key Features
-
-### 👁️ Computer Vision Module
-- Real-time eye state classification (open/closed) using CNN
-- PERCLOS (Percentage of Eye Closure) measurement
-- Blink rate detection and head pose estimation
-- Adaptive thresholding for different lighting conditions
-
-### 🗣️ Voice Interaction System
-- Speech-to-text with Whisper AI (multilingual support)
-- Context-aware text-to-speech responses
-- Voice activity detection for alert suppression
-- Dynamic volume adjustment based on environment noise
-
-### ⚠️ Smart Alert System
-| Alert Level | Trigger Condition | Response |
-|-------------|-------------------|----------|
-| Mild | Drowsiness Score > 20 | Periodic verbal reminders |
-| Moderate | Score > 40 | Increased frequency + sound alerts |
-| Extreme | Score > 60 | Loud repeated alarms + emergency protocol |
-
-### 🧠 Conversational Engine
-- Dynamic response generation based on user state
-- Intentional misinterpretation (20% chance) for engagement
-- Multilingual support with automatic translation
-- Context-aware dialog management
-
----
-
-## 🏗️ System Architecture
-drowsiness_detection_project/
-├── datasets/ # Training datasets
-│ ├── MRL_Dataset/ # 80,000+ eye images
-│ ├── DDD/ # Driver Drowsiness Dataset
-│ └── UTA_RLDD/ # Real-life driving videos
-├── models/ # Pretrained models
-│ ├── cnn_eye_model.h5 # Eye state classifier
-│ └── whisper/ # STT models
-├── integrated_project/ # Main application
-│ ├── main.py # System orchestrator
-│ ├── modules/ # Core components
-│ │ ├── eye_tracker.py # CV pipeline
-│ │ ├── voice_interface.py # Audio processing
-│ │ ├── convo_engine.py # Dialog management
-│ │ └── alert_system.py # Alert logic
-│ ├── utils/ # Support utilities
-│ │ ├── language_support.py # Translation services
-│ │ └── dataset_loader.py # Data preprocessing
-│ └── config/
-│ └── settings.json # Runtime configuration
+Stuff You Need
+Laptop: Windows, macOS, or Linux with at least 4GB RAM (8GB is better).
+Webcam: Built-in or USB (like your laptop’s default camera).
+Microphone: Built-in or earphones with a mic.
+Internet: For downloading files and translations (works offline after setup).
+Disk Space: About 5GB for models, sounds, and libraries.
 
 
 
----
+Python: Version 3.8 or 3.9 (not newer ones like 3.10).
 
-## 🛠️ Installation & Setup
+Step-by-Step Setup
 
-### Prerequisites
-- Python 3.8+
-- Webcam & microphone
-- NVIDIA GPU recommended for real-time performance
+1. Download the Project
+Go to the GitHub repo (I’ll share the link, or check our class group).
+Click the green “Code” button and select “Download ZIP”.
+Unzip the file to a folder (e.g., C:\Projects\drowsiness-detection).
+Open the integrated_project folder inside it.
 
-```bash
-# Clone repository
-git clone https://github.com/yourrepo/drowsiness-detection.git
-cd drowsiness-detection/integrated_project
+2. Install Python
 
-# Create virtual environment
+Check if you have Python 3.8 or 3.9:
+Open a terminal (Command Prompt on Windows, Terminal on macOS/Linux).
+Run: python --version
+If it’s not 3.8 or 3.9, download from python.org.
+Pick 3.8 or 3.9, and check “Add Python to PATH” during installation.
+Verify again with python --version.
+Tip: If you have Python 3.10 or higher, uninstall it first to avoid issues.
+
+3. Set Up a Virtual Environment
+
+In the integrated_project folder, open a terminal:
+Windows: Right-click, select “Open Command Prompt here” (or use VS Code).
+macOS/Linux: Use Terminal and cd to the folder.
+
+
+
+Create a virtual environment:
+
 python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-.venv\Scripts\activate     # Windows
 
-# Install dependencies
+Activate it:
+
+Windows: .venv\Scripts\activate
+macOS/Linux: source .venv/bin/activate
+
+You’ll see (.venv) in the terminal, meaning it’s ready.
+Why? This keeps the project’s libraries separate, so your laptop’s Python stays clean.
+
+4. Install Libraries
+
+In the integrated_project folder (with (.venv) active), run:
+
 pip install -r requirements.txt
 
-# Download pretrained models
-python download_models.py
+This installs everything (takes 5-10 minutes). If it’s slow, try:
 
-🚦 Running the System
-Basic Usage
+pip install --no-cache-dir -r requirements.txt
+Fix: If you see “pip not found”, run:
+python -m ensurepip --upgrade
+python -m pip install --upgrade pip
 
-python main.py --camera 0 --mic 1
+5. Get Models, Sounds, and Configs
 
-Command Line Options
+You need some files to make the system work. I’ve put them in a Google Drive link (check our class group or ask me). Download and place them like this:
 
-Parameter	    Description	               Default
---camera	 Video source index	              0
---mic	      Audio input index	              1
---lang	     Default language	              en
---debug  	Enable debug mode	            False
+Models (for eye and language detection):
+cnn_eye_model_v2.h5
+lid.176.bin
+Put in: integrated_project/models/
 
-Expected Output
-[INFO] System initialized - Starting modules...
-[CV] Eye tracker active (30 FPS)
-[AUDIO] Voice interface ready (Whisper base)
-[ALERT] Current status: Normal (Score: 15)
+Sounds (for alerts):
 
+mild_alert_india.wav
+extreme_alert_india.wav
+Put in: integrated_project/sounds/
 
-📊 Dataset Preparation
-Supported Formats
-Images: .jpg, .png (24x24 grayscale for eye model)
+Noise Profile (for traffic noise):
+indian_traffic_noise.wav
+Put in: integrated_project/resources/
 
-Videos: .mp4, .avi (for behavioral analysis)
+Configs (already in the ZIP, but check):
+settings.json
 
-Structure:
+conversation_kb.json
+Should be in: integrated_project/config/
 
-datasets/
-  ├── train/
-  │   ├── open_eyes/
-  │   └── closed_eyes/
-  └── test/
-      ├── open_eyes/
-      └── closed_eyes/
+Note: Create models/, sounds/, and resources/ folders if they’re missing.
 
-
-Use the dataset loader:
-from utils.dataset_loader import load_mrl_eye_dataset
-X_train, X_test, y_train, y_test = load_mrl_eye_dataset("datasets/MRL_Dataset")
+Optional Datasets (for testing accuracy):
+MRL Eye Dataset (~1GB) and UTA RLDD (~2GB) from the same Google Drive.
+Put in: integrated_project/datasets/MRL_Dataset/ and integrated_project/datasets/UTA_RLDD/.
 
 
-🛠️ Customization Guide
-Configuration Options
-Edit config/settings.json:
 
-{
-  "eye_tracker": {
-    "extreme_drowsy_score": 45,
-    "blink_rate_threshold": 0.15
-  },
-  "alert_system": {
-    "extreme_alert_interval": 3
+You can skip these for basic use; the system runs without them.
+Fix: If you can’t find the files, ping me, and I’ll share the link again.
+
+6. Test Everything
+Run the test script to make sure it’s working:
+python test_system.py
+
+You should see:
+
+2025-04-19 10:00:00 - test_system - INFO - Starting system test...
+[INFO] Eye Tracker Test: Score=10, Level=normal
+[INFO] Voice Interface Test: Recognized speech=Hello
+[INFO] Language Support Test: Detected=hi (0.95), Translated=I'm awake
+[INFO] System test completed successfully
+
+If it fails, check the Troubleshooting section below.
+
+Running the System
+Basic Command
+Sit in front of your webcam, plug in your mic, and run:
+python main.py --camera 0 --mic 1 --lang hi
+
+What Happens
+
+Your webcam turns on, watching your eyes.
+If you close your eyes too long, you’ll hear “Jaagte raho!” or other Hindi alerts.
+Speak (e.g., “Main jaag raha hoon”), and it’ll respond to keep you awake.
+Open http://localhost:8501 in your browser to see a dashboard with your drowsiness score.
+
+
+How to Find Camera/Mic Numbers:
+
+Webcam: Run python -c "import cv2; print([i for i in range(3) if cv2.VideoCapture(i).isOpened()])".
+Mic: Run python -c "import sounddevice; print(sounddevice.query_devices())".
+
+
+
+Customizing It
+
+Switch to Tamil
+Try Tamil alerts like “Veḻiyāka iru!”:
+python main.py --lang ta
+
+Add Your Own Alert Sound
+
+Record a .wav file (e.g., “Wake up!”) using Audacity or your phone.
+Save it in integrated_project/sounds/ (e.g., my_alert.wav).
+
+
+Edit integrated_project/config/settings.json:
+
+"alert_system": {
+  "audio": {
+    "custom_sounds": {
+      "mild": "sounds/my_alert.wav"
+    }
   }
 }
 
-Adding New Languages
-Add language code to conversation_engine.languages.supported
+Change Alert Messages
 
-Provide translations in conversation_kb.json
+Edit integrated_project/config/conversation_kb.json:
 
-Test with: python main.py --lang es
+{
+  "awake_response": {
+    "hi": "Awesome, tum jaag rahe ho!"
+  }
+}
 
-📈 Performance Metrics
+Want Punjabi?
+Add "pu" to language_support.languages.supported in settings.json.
 
-Component	       Latency   	Accuracy
-Eye Tracker	         15ms	     94%
-Speech Recognition	 300ms	     89%
-Alert Response	     50ms	      -
+Update conversation_kb.json:
+
+{
+  "awake_response": {
+    "pu": "Vadhia, tu jaag raha hai!"
+  }
+}
+
+Run: python main.py --lang pu
+
+
+Troubleshooting
+Issue
+
+How to Fix
+Webcam not working
+Run python -c "import cv2; print([i for i in range(3) if cv2.VideoCapture(i).isOpened()])". Try --camera 1 or check if another app is using the camera.
+Mic not working
+Run python -c "import sounddevice; print(sounddevice.query_devices())". Try --mic 0 or use earphones.
+
+
+‘Model not found’
+Check cnn_eye_model_v2.h5 and lid.176.bin are in integrated_project/models/.
+Runs slow
+Close other apps; edit settings.json to set eye_tracker.max_fps to 15.
+
+No translations
+
+Ensure internet is on; set language_support.fallback_language to en in settings.json.
+Dashboard not at localhost:8501
+Check settings.json for dashboard.enabled: true. Try http://127.0.0.1:8501.
+Still Stuck? Look at integrated_project/logs/system.log for clues or ask me for help.
+
+
+Common Questions
+
+Q: Will it work on my old laptop?
+Yep, it’s made for basic laptops with 4GB RAM. It even runs on a Raspberry Pi!
+
+Q: Does it understand Hinglish?
+Totally! It catches Hinglish and responds in Hindi or your chosen language.
+
+Q: Is my data safe?
+100%. No audio or video is saved, your face is blurred, and everything’s encrypted.
+
+Q: Do I need the datasets?
+Nope, you can skip them for basic use. They’re only for checking accuracy.
+
+Q: What if I’m offline?
+You need internet to set up and for translations, but it works offline with cached phrases.
+
+Q: How do I know it’s running?
+You’ll see logs like [CV] Eye tracker active and a dashboard at http://localhost:8501.
+
+Extra Cool Stuff
+
+Dashboard: Check your drowsiness score live on a webpage.
+Vibration Alerts: If you hook up a vibration motor (like with Arduino), it buzzes.
+Emergency Mode: Say “help” or “sos” to trigger an alert (more features coming).
+Future Plans: I’m thinking of adding driver stats for fleets or phone notifications.
+
+
+
+Make It Your Own
+New Language: Add Gujarati or Punjabi to settings.json and conversation_kb.json.
+Custom Alerts: Record your voice for alerts or use funny sounds.
+Tweak Settings: Edit settings.json to change alert timing or drowsiness levels.
+
+
 

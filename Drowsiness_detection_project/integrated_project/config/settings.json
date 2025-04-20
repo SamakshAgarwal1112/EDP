@@ -1,106 +1,146 @@
 {
   "system": {
-    "name": "Drowsiness Detection System",
-    "version": "2.1.0",
+    "name": "IndiaSafe Drowsiness Detection System",
+    "version": "2.2.0",
     "debug_mode": false,
-    "performance_monitoring": true
+    "performance_monitoring": true,
+    "encryption": {
+      "enabled": true,
+      "key_path": "config/encryption_key.key"
+    }
   },
   "eye_tracker": {
-    "model_path": "models/cnn_eye_model_v2.h5",
+    "model_path": "integrated_project/models/cnn_eye_model_v2.h5",
     "model_type": "cnn",
-    "input_shape": [24, 24, 1],
+    "input_shape": [48, 48, 1],
     "thresholds": {
-      "eye_closed_frames": 20,
-      "normal_drowsy": 20,
-      "extreme_drowsy": 40,
-      "perclos": 0.8,
-      "blink_rate": 0.2
+      "eye_closed_frames": 15,
+      "normal_drowsy": 18,
+      "extreme_drowsy": 35,
+      "perclos": 0.75,
+      "blink_rate": 0.18
     },
     "smoothing": {
-      "window_size": 50,
+      "window_size": 40,
       "method": "exponential_moving_average"
     },
     "performance": {
-      "max_fps": 30,
-      "resolution": [640, 480]
+      "max_fps": 20,
+      "resolution": [480, 360],
+      "low_light_mode": true
+    },
+    "anonymization": {
+      "enabled": true,
+      "method": "blur"
     }
   },
   "alert_system": {
     "levels": {
       "mild": {
-        "interval_sec": 15,
+        "interval_sec": 12,
         "volume": 0.7,
-        "repeat_count": 3
+        "repeat_count": 3,
+        "haptic_enabled": true
       },
       "moderate": {
-        "interval_sec": 10,
+        "interval_sec": 8,
         "volume": 0.85,
-        "repeat_count": 5
+        "repeat_count": 5,
+        "haptic_enabled": true
       },
       "extreme": {
-        "interval_sec": 5,
+        "interval_sec": 4,
         "volume": 1.0,
-        "repeat_count": 0
+        "repeat_count": 0,
+        "haptic_enabled": true
       }
     },
     "audio": {
       "enabled": true,
       "fallback_beep": true,
       "custom_sounds": {
-        "mild": "sounds/mild_alert.wav",
-        "extreme": "sounds/extreme_alert.wav"
+        "mild": "integrated_project/sounds/mild_alert_india.wav",
+        "extreme": "integrated_project/sounds/extreme_alert_india.wav"
       }
     },
     "tts": {
       "enabled": true,
       "rate": 180,
       "volume": 1.0,
-      "voice": "female"
+      "voice": "female",
+      "languages": ["en", "hi", "ta", "te", "bn", "mr", "kn"]
     }
   },
   "voice_interface": {
     "stt": {
       "model": "whisper",
-      "model_size": "base",
+      "model_size": "medium",
       "language": "auto",
       "phrase_time_limit": 5,
-      "energy_threshold": 400,
-      "dynamic_energy_threshold": true
+      "energy_threshold": 500,
+      "dynamic_energy_threshold": true,
+      "noise_profile": "integrated_project/resources/indian_traffic_noise.wav"
     },
     "tts": {
-      "engine": "pyttsx3",
+      "engine": "gtts",
       "rate": 160,
       "volume": 1.0,
-      "voice_preference": ["female", "male"]
+      "voice_preference": ["female", "male"],
+      "languages": ["en", "hi", "ta", "te", "bn", "mr", "kn"]
     },
     "vad": {
       "enabled": true,
-      "timeout_sec": 2.0,
-      "min_volume_db": -40
+      "timeout_sec": 1.8,
+      "min_volume_db": -35
     }
   },
   "conversation_engine": {
     "responses": {
-      "misinterpretation_chance": 0.15,
-      "randomization_factor": 0.3,
-      "response_delay_sec": 1.2
+      "misinterpretation_chance": 0.1,
+      "randomization_factor": 0.25,
+      "response_delay_sec": 1.0
     },
-    "knowledge_base": "config/conversation_kb.json",
+    "knowledge_base": "integrated_project/config/conversation_kb.json",
     "languages": {
       "default": "en",
-      "supported": ["en", "es", "fr", "de"]
+      "supported": ["en", "hi", "ta", "te", "bn", "mr", "kn"]
     }
   },
   "language_support": {
     "translation": {
-      "provider": "googletrans",
+      "provider": "deep_translator",
       "cache_enabled": true,
-      "cache_size": 1000,
+      "cache_size": 2000,
+      "cache_expiry_sec": 86400,
       "fallback_language": "en"
     },
     "detection": {
       "method": "fasttext",
-      "confidence_threshold": 0.7
+      "model_path": "integrated_project/models/lid.176.bin",
+      "confidence_threshold": 0.7,
+      "hinglish_enabled": true
+    },
+    "languages": {
+      "default": "en",
+      "supported": ["en", "hi", "ta", "te", "bn", "mr", "kn"]
+    }
+  },
+  "dataset_loader": {
+    "dataset_path": "integrated_project/datasets",
+    "uta_rldd": {
+      "enabled": true,
+      "path": "integrated_project/datasets/UTA_RLDD",
+      "frames_per_video": 30,
+      "anonymize": true
+    },
+    "mrl_eye_dataset": {
+      "enabled": true,
+      "path": "integrated_project/datasets/MRL_Dataset",
+      "target_size": [48, 48]
+    },
+    "validation": {
+      "enabled": true,
+      "interval_hours": 24
     }
   },
   "logging": {
@@ -108,9 +148,10 @@
     "level": "INFO",
     "file": {
       "enabled": true,
-      "path": "logs/system.log",
-      "max_size_mb": 10,
-      "backup_count": 5
+      "path": "integrated_project/logs/system.log",
+      "max_size_mb": 5,
+      "backup_count": 5,
+      "encryption": true
     },
     "console": {
       "enabled": true,
@@ -118,17 +159,41 @@
     }
   },
   "modules": {
-    "auto_start": ["eye_tracker", "voice_interface", "alert_system"],
-    "start_delay_sec": 1.0
+    "auto_start": ["eye_tracker", "voice_interface", "alert_system", "conversation_engine", "language_support"],
+    "start_delay_sec": 0.5
   },
   "privacy": {
     "audio_recording": {
+      "enabled": false
+    },
+    "video_recording": {
       "enabled": false,
-      "retention_days": 1
+      "anonymize": true
     },
     "data_collection": {
       "enabled": false,
       "anonymize": true
+    },
+    "cache_clearing": {
+      "enabled": true,
+      "interval_hours": 12
     }
+  },
+  "dashboard": {
+    "enabled": true,
+    "port": 8501,
+    "refresh_interval_sec": 1
+  },
+  "fleet_management": {
+    "enabled": false,
+    "analytics": {
+      "drowsiness_trends": false,
+      "driver_reports": false
+    }
+  },
+  "emergency_detection": {
+    "enabled": true,
+    "keywords": ["help", "sos", "emergency"],
+    "threshold_score": 50
   }
 }
